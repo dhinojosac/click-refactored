@@ -1,8 +1,8 @@
 import tkinter as tk          # GUI package
 from time import sleep, time
 #from keyboard import is_pressed
-from pynput.keyboard import Listener
-from pynput import mouse
+#from pynput.keyboard import Listener
+#from pynput import mouse
 import math
 import random
 
@@ -36,6 +36,49 @@ random_color        = True # square random color picked from color_options
 square_color        = [255,0,0] #RGB color if random color is False
 colors_options      = [[255,0,0],[255,255,0],[0,0,255]] #option of colors, only work if random_color is True
 
+# STEP 1: RED square 500x500 pixels in the center of screen
+if STEP== 1:
+    square_max_iter     = 1   # max number of iterations
+    max_timer_click     = 5   # max timer to click image
+    square_size         = 500 # square width
+    click_error         = 0   # click error
+    random_pos          = False #random position
+    random_color        = False # square random color picked from color_options
+    square_color        = [255,0,0] #RGB color if random color is False
+    colors_options      = [[255,0,0],[255,255,0],[0,0,255]] #option of colors, only work if random_color is True
+
+# STEP 2: Random color square 500x500 pixels in the center of screen
+if STEP== 2:
+    square_max_iter     = 1   # max number of iterations
+    max_timer_click     = 5   # max timer to click image
+    square_size         = 500 # square width
+    click_error         = 0   # click error
+    random_pos          = False #random position
+    random_color        = True # square random color picked from color_options
+    square_color        = [255,0,0] #RGB color if random color is False
+    colors_options      = [[255,0,0],[255,255,0],[0,0,255]] #option of colors, only work if random_color is True
+
+# STEP 3: Random color square 200x200 pixels in the center of screen
+if STEP== 3:
+    square_max_iter     = 1   # max number of iterations
+    max_timer_click     = 5   # max timer to click image
+    square_size         = 200 # square width pixels
+    click_error         = 0   # click error
+    random_pos          = False #random position
+    random_color        = True # square random color picked from color_options
+    square_color        = [255,0,0] #RGB color if random color is False
+    colors_options      = [[255,0,0],[255,255,0],[0,0,255]] #option of colors, only work if random_color is True
+
+# STEP 4: Random color square 200x200 pixels in the random position of screen
+if STEP== 4:
+    square_max_iter     = 3   # max number of iterations
+    max_timer_click     = 5   # max timer to click image
+    square_size         = 200 # square width
+    click_error         = 0   # click error
+    random_pos          = True #random position    
+    random_color        = True # square random color picked from color_options
+    square_color        = [255,0,0] #RGB color if random color is False
+    colors_options      = [[255,0,0],[255,255,0],[0,0,255]] #option of colors, only work if random_color is True
 
 
 
@@ -67,10 +110,6 @@ def led_success():
 
 def led_failed():
     turn_on_led("FAIL")
-
-
-def showxy(event):
-        print(event.x ,  event.y)
 
 
 class ClickApplication:
@@ -142,6 +181,13 @@ class ClickApplication:
 
         #self.finishMouseLister()   #stop listener when program was ended
         self.master.destroy()        #destroy windows of tkinter
+
+        #finish camera video
+        if PI_CAMERA:
+            cam.stop_preview()
+            cam.stop_recording()
+        print("--------------------------------------\n[!] YOUR SCORE IS {} OF {}".format(self.score, square_max_iter))
+        print("--------------------------------------\n")
         
 
     def quitApp(self):
@@ -178,6 +224,7 @@ class ClickApplication:
             self.square_timer = time()    # restart timer
     
     def on_click(self, x, y, button, pressed):
+        """ DEPRECATED """
         if pressed:
             print("Mouse clicked at ({0}, {1}) with {2}".format(x*1.25,y*1.25,button))
         if button == mouse.Button.left and pressed==True:       #check if left button is clicked, pressed=Trye indicates pressed, False indicates release
@@ -213,8 +260,6 @@ class ClickApplication:
     
 
 def main():
-   # with Listener(on_click=on_click) as listener:
-    #    listener.join()
     root = tk.Tk()
     app = ClickApplication(root)
     #root.mainloop()
