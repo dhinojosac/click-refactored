@@ -69,7 +69,8 @@ def led_failed():
     turn_on_led("FAIL")
 
 
-
+def showxy(event):
+        print(event.x ,  event.y)
 
 
 class ClickApplication:
@@ -90,12 +91,12 @@ class ClickApplication:
 
         self.w = master.winfo_screenwidth()
         self.h = master.winfo_screenheight()
-        self.master.bind("<KeyPress-B>", self.quitApp)
         #self.master.attributes("-fullscreen", True)
         self.master.configure(background='black')
         self.master.geometry("{}x{}+{}+{}".format(self.w,self.h,-10,-5)) #sets size of windows
-        self.startMouseListener()
+        #self.startMouseListener()
         self.createCanvas()
+        self.canvas.bind("<Button-1>", self.onclicktkinter)
         self.createColorBox()
 
         
@@ -139,7 +140,7 @@ class ClickApplication:
             sleep(0.1)
             self.master.update() #function mandatory to update tkinter gui
 
-        self.finishMouseLister()   #stop listener when program was ended
+        #self.finishMouseLister()   #stop listener when program was ended
         self.master.destroy()        #destroy windows of tkinter
         
 
@@ -193,6 +194,23 @@ class ClickApplication:
 
         if button == mouse.Button.right and pressed ==True: #check if right click is pressed
             print("Right click: {},{}".format(x,y))
+    
+    def onclicktkinter(self, event):
+        x = event.x
+        y = event.y
+        print("Click position: {},{}".format(x,y))              #debug: show cursor position on console
+        if  x>= self.square_pos_x-click_error and x<= self.square_pos_x+square_size+click_error and y>= self.square_pos_y-click_error and y<= self.square_pos_y+square_size+click_error : #check if click is inside square+error area.
+            self.score=self.score+1                                   #add 1 to score if is a right click, inside a square+error area.
+            print(">> CLICK INSIDE TARGET!")
+            led_success()
+            self.changeRightClick=True
+        else:
+            print(">> CLICK FAILED!")
+            led_failed()
+        self.clicked = True
+
+    
+    
 
 def main():
    # with Listener(on_click=on_click) as listener:
