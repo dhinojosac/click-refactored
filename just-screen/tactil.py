@@ -2,7 +2,7 @@ from pynput.keyboard import Listener
 from pynput import mouse
 from time import sleep, time
 
-def on_click(self, x, y, button, pressed):
+def on_click( x, y, button, pressed):
     if pressed:
         print("Mouse clicked at ({0}, {1}) with {2}".format(x*1.25,y*1.25,button))
 
