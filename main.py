@@ -83,7 +83,7 @@ if STEP== 4:
 
 
 
-score = 0   # score used to return right clicks
+
 
 # variables to control program
 square_show = False  #indicates if the square is on screen

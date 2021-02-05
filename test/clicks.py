@@ -21,6 +21,8 @@ if PI_CAMERA:
     cam = picamera.PiCamera()
     fileName = get_file_name()  
 
+STEP =  4                 # SELECT THE STEP 1 to 4
+TIME_LED_ON = 0.2         # Time led on 
 
 #default configuration
 square_max_iter     = 3   # max number of iterations
@@ -84,7 +86,7 @@ class ClickApplication:
         self.clicked = False         #indicates if left click is pressed
         self.isRunning = True        #indicates if program is running
         self.changeRightClick = False #indicate right click inside box
-        
+        self.score = 0   # score used to return right clicks
 
         self.w = master.winfo_screenwidth()
         self.h = master.winfo_screenheight()
@@ -95,6 +97,51 @@ class ClickApplication:
         self.startMouseListener()
         self.createCanvas()
         self.createColorBox()
+
+        
+        #loop of program
+        while True:    
+            if self.square_iter>square_max_iter:   #checks if program reach max iterations
+                break
+
+            if self.square_show == False: #checks if square is on screen, if not, create one
+                if self.square_iter >= square_max_iter:
+                    break
+                print("--------------------------------------\n[+] Square {} created!".format(self.square_iter))
+                createSquare(self.canvas) #create square
+                print("Square position: {},{}".format(self.square_pos_x,self.square_pos_y))
+            
+            if timer_click_mode:
+                if time()- self.square_timer > max_timer_click or self.clicked: # checks time of square on screen or left button of mouse was clicked
+                    self.canvas.delete("all")    #delete all objects in canvas
+                    self.square_show = False  #set false to create a new square
+                    self.clicked = False         #set false to init click state
+                    self.square_timer = time()    #restart timer
+            elif self.clicked:
+                if self.changeRightClick and self.right_click_mode:
+                    self.canvas.delete("all")    #delete all objects in canvas
+                    self.square_show = False  #set false to create a new square
+                    self.clicked = False         #set false to init click state
+                    self.square_timer = time()    #restart timer
+                    self.changeRightClick = False
+                elif not self.right_click_mode:
+                    self.canvas.delete("all")    #delete all objects in canvas
+                    self.square_show = False  #set false to create a new square
+                    self.clicked = False         #set false to init click state
+                    self.square_timer = time()    #restart timer
+            
+
+            
+            
+            if self.isRunning == False:  #end program
+                break
+            
+            sleep(0.1)
+            self.master.update() #function mandatory to update tkinter gui
+
+        self.finishMouseLister()   #stop listener when program was ended
+        self.master.destroy()        #destroy windows of tkinter
+        
 
     def quitApp(self):
         self.master.quit()
@@ -135,7 +182,7 @@ class ClickApplication:
         if button == mouse.Button.left and pressed==True:       #check if left button is clicked, pressed=Trye indicates pressed, False indicates release
             print("Click position: {},{}".format(x,y))              #debug: show cursor position on console
             if  x>= self.square_pos_x-click_error and x<= self.square_pos_x+square_size+click_error and y>= self.square_pos_y-click_error and y<= self.square_pos_y+square_size+click_error : #check if click is inside square+error area.
-                score=score+1                                   #add 1 to score if is a right click, inside a square+error area.
+                self.score=self.score+1                                   #add 1 to score if is a right click, inside a square+error area.
                 print(">> CLICK INSIDE TARGET!")
                 led_success()
                 changeRightClick=True
@@ -152,7 +199,7 @@ def main():
     #    listener.join()
     root = tk.Tk()
     app = ClickApplication(root)
-    root.mainloop()
+    #root.mainloop()
 
 
 if __name__ == '__main__':
