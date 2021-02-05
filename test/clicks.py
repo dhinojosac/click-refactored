@@ -108,7 +108,7 @@ class ClickApplication:
                 if self.square_iter >= square_max_iter:
                     break
                 print("--------------------------------------\n[+] Square {} created!".format(self.square_iter))
-                createSquare(self.canvas) #create square
+                self.createColorBox() #create square
                 print("Square position: {},{}".format(self.square_pos_x,self.square_pos_y))
             
             if timer_click_mode:
@@ -118,13 +118,13 @@ class ClickApplication:
                     self.clicked = False         #set false to init click state
                     self.square_timer = time()    #restart timer
             elif self.clicked:
-                if self.changeRightClick and self.right_click_mode:
+                if self.changeRightClick and right_click_mode:
                     self.canvas.delete("all")    #delete all objects in canvas
                     self.square_show = False  #set false to create a new square
                     self.clicked = False         #set false to init click state
                     self.square_timer = time()    #restart timer
                     self.changeRightClick = False
-                elif not self.right_click_mode:
+                elif not right_click_mode:
                     self.canvas.delete("all")    #delete all objects in canvas
                     self.square_show = False  #set false to create a new square
                     self.clicked = False         #set false to init click state
@@ -185,11 +185,11 @@ class ClickApplication:
                 self.score=self.score+1                                   #add 1 to score if is a right click, inside a square+error area.
                 print(">> CLICK INSIDE TARGET!")
                 led_success()
-                changeRightClick=True
+                self.changeRightClick=True
             else:
                 print(">> CLICK FAILED!")
                 led_failed()
-            clicked = True
+            self.clicked = True
 
         if button == mouse.Button.right and pressed ==True: #check if right click is pressed
             print("Right click: {},{}".format(x,y))
